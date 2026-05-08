@@ -3,54 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Runner Pro Sound - Nasslo Muñoz Saez</title>
+    <title>Nasslo Muñoz Saez - Dino Runner Motion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chango&family=Nunito:wght@400;900&display=swap');
-        body { font-family: 'Nunito', sans-serif; background-color: #020617; color: #fff; overflow: hidden; touch-action: none; height: 100dvh; }
-        h1, h2, #score-display { font-family: 'Chango', cursive; text-shadow: 3px 3px 0px #4338ca; }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@900&display=swap');
+        
+        body { font-family: 'Nunito', sans-serif; background-color: #f7f7f7; color: #535353; overflow: hidden; touch-action: none; height: 100dvh; margin: 0; }
+        
+        /* Estilo Retro para el Score y Títulos */
+        .retro-font { font-family: 'Press Start 2P', cursive; }
+
         .view { display: none; width: 100%; height: 100dvh; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; box-sizing: border-box; }
         .active { display: flex; }
-        canvas#gameCanvas { width: 100%; max-width: 800px; aspect-ratio: 16/9; border: 6px solid #6366f1; border-radius: 2rem; background: radial-gradient(circle, #1e1b4b 0%, #020617 100%); box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
-        #qrcode { padding: 10px; background: white; border-radius: 1rem; }
-        .camera-container { position: relative; width: 220px; height: 220px; border-radius: 50%; overflow: hidden; border: 4px solid #fbbf24; margin-bottom: 1rem; box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+        
+        canvas#gameCanvas { 
+            width: 100%; 
+            max-width: 1000px; 
+            aspect-ratio: 16/7; 
+            border-bottom: 4px solid #535353; 
+            background: #fff; 
+            image-rendering: pixelated; /* Para ese look retro */
+        }
+        
+        #qrcode { padding: 10px; background: white; border: 2px solid #535353; border-radius: 8px; }
+        
+        /* Contenedor de cámara redondo para el rostro */
+        .camera-container { 
+            position: relative; width: 200px; height: 200px; border-radius: 50%; 
+            overflow: hidden; border: 6px solid #535353; margin-bottom: 1.5rem; 
+            background: #eee;
+        }
         #video-feed { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .btn-retro { box-shadow: 0 6px 0 #1e1b4b; transition: all 0.1s; cursor: pointer; }
-        .btn-retro:active { transform: translateY(4px); box-shadow: 0 2px 0 #1e1b4b; }
+        
+        /* Botón estilo pixelado */
+        .btn-pix { 
+            background-color: #535353; color: white; padding: 15px 30px; 
+            border: 4px solid #000; font-family: 'Press Start 2P', cursive; font-size: 12px;
+            box-shadow: 4px 4px 0 #888; transition: all 0.1s; cursor: pointer;
+        }
+        .btn-pix:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #888; }
     </style>
 </head>
 <body>
 
     <div id="view-host-wait" class="view">
-        <div class="text-6xl mb-4">🏃‍♂️💨</div>
-        <h1 class="text-5xl text-indigo-200 mb-6">RUNNER RADAR</h1>
+        <div class="text-6xl mb-6">🦴</div>
+        <h1 class="text-2xl retro-font mb-8 tracking-tighter">DINO MOTION PR0</h1>
         <div id="qrcode" class="mb-6"></div>
-        <p id="host-status" class="animate-pulse text-indigo-300 font-bold">¡Escanea para conectar al niño!</p>
-        <p class="mt-8 text-[10px] text-indigo-500 uppercase font-black tracking-widest">Nasslo Muñoz Saez • Sistema de Movimiento Pro</p>
+        <p id="host-status" class="animate-pulse font-bold text-sm">Escanea para conectar el sensor del niño...</p>
+        <p class="mt-10 text-[10px] text-gray-400 uppercase font-black tracking-widest">Nasslo Muñoz Saez • Ing. Informático</p>
     </div>
 
     <div id="view-host-game" class="view">
-        <div class="flex justify-between w-full max-w-[800px] mb-4 px-6 bg-indigo-900/30 py-3 rounded-2xl border border-indigo-500/30">
-            <h2 class="text-2xl text-yellow-400">SCORE: <span id="score-display">0</span></h2>
-            <div class="text-right text-[10px] font-black text-indigo-400 uppercase">Procesando Movimiento Remoto</div>
+        <div class="flex justify-between w-full max-w-[1000px] mb-2 px-2 retro-font" style="font-size: 14px;">
+            <div id="score-display">HI 00000 00000</div>
         </div>
         <canvas id="gameCanvas"></canvas>
     </div>
 
     <div id="view-controller" class="view">
         <div id="step-camera" class="flex flex-col items-center w-full max-w-xs">
-            <h2 class="text-2xl font-black mb-6 text-indigo-200">TU CARA DE VELOCIDAD</h2>
+            <h2 class="text-xl font-black mb-6 text-gray-800">TU ROSTRO DINO</h2>
             <div class="camera-container"><video id="video-feed" autoplay playsinline></video></div>
-            <button id="btn-capture" class="btn-retro bg-indigo-600 p-5 rounded-2xl w-full font-black text-xl">📸 ¡LISTO!</button>
+            <button id="btn-capture" class="btn-pix w-full">CAPTURAR</button>
         </div>
         <div id="step-play" class="hidden flex-col items-center text-center">
-            <div class="w-32 h-32 bg-emerald-500/20 rounded-full flex items-center justify-center border-4 border-emerald-500 mb-6">
-                <span class="text-6xl animate-bounce">🏃</span>
+            <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center border-4 border-gray-600 mb-8 shadow-inner">
+                <span class="text-7xl animate-bounce">🦖</span>
             </div>
-            <h2 class="text-3xl font-black text-emerald-400 mb-2">¡ENLACE OK!</h2>
-            <p class="text-indigo-200">Mueve el teléfono para esquivar<br>¡Salta para volar sobre cajas!</p>
+            <h2 class="text-3xl font-black text-gray-900 mb-4">¡CONECTADO!</h2>
+            <p class="text-gray-700 font-bold mb-2">¡Salta para saltar!</p>
+            <p class="text-gray-700 font-bold">¡Inclina el móvil hacia abajo<br>para agacharte!</p>
         </div>
     </div>
 
@@ -60,51 +85,26 @@
         const hostId = urlParams.get('host');
         let peer, connection, customHead = null;
 
-        // --- MOTOR DE AUDIO ---
+        // --- MOTOR DE AUDIO (Mismos sonidos retro) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            const now = audioCtx.currentTime;
-            if (type === 'jump') {
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.2);
-                osc.start(); osc.stop(now + 0.2);
-            } else if (type === 'crash') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(100, now);
-                osc.frequency.linearRampToValueAtTime(20, now + 0.5);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.5);
-                osc.start(); osc.stop(now + 0.5);
-            } else if (type === 'point') {
-                osc.frequency.setValueAtTime(800, now);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.1);
-                osc.start(); osc.stop(now + 0.1);
-            }
+        function playSound(t) {
+            if (audioCtx.state==='suspended') audioCtx.resume();
+            const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); const n=audioCtx.currentTime;
+            if(t==='jump'){o.frequency.setValueAtTime(200,n);o.frequency.exponentialRampToValueAtTime(800,n+0.1);g.gain.setValueAtTime(0.1,n);g.gain.linearRampToValueAtTime(0,n+0.1);o.start();o.stop(n+0.1);}
+            else if(t==='crash'){o.type='sawtooth';o.frequency.setValueAtTime(120,n);o.frequency.linearRampToValueAtTime(30,n+0.4);g.gain.setValueAtTime(0.2,n);g.gain.linearRampToValueAtTime(0,n+0.4);o.start();o.stop(n+0.4);}
+            else if(t==='point'){o.frequency.setValueAtTime(1000,n);g.gain.setValueAtTime(0.05,n);g.gain.linearRampToValueAtTime(0,n+0.05);o.start();o.stop(n+0.05);}
         }
 
         // --- PEER JS ---
         peer = new Peer();
-        
         if (isController) {
             document.getElementById('view-controller').classList.add('active');
             const video = document.getElementById('video-feed');
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }).then(s => video.srcObject = s);
-
             peer.on('open', () => { connection = peer.connect(hostId); setupSensors(); });
-
             document.getElementById('btn-capture').onclick = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 200; canvas.height = 200;
+                const canvas = document.createElement('canvas');canvas.width=200;canvas.height=200;
                 canvas.getContext('2d').drawImage(video, 0, 0, 200, 200);
                 connection.send({ type: 'photo', data: canvas.toDataURL('image/png') });
                 document.getElementById('step-camera').classList.add('hidden');
@@ -120,61 +120,88 @@
                 connection = conn;
                 conn.on('data', data => {
                     if (data.type === 'photo') {
-                        const img = new Image();
-                        img.onload = () => { customHead = img; startGame(); };
-                        img.src = data.data;
+                        const img = new Image(); img.onload = () => { customHead = img; startGame(); }; img.src = data.data;
                     }
-                    if (data.type === 'move') player.targetLane = data.lane;
                     if (data.type === 'jump') { player.jump(); playSound('jump'); }
+                    if (data.type === 'duck') player.isDucking = data.value;
                 });
             });
         }
 
+        // --- SENSORES MEJORADOS (Salto + Agache) ---
         function setupSensors() {
+            // Detección de Agache (Usando inclinación Gamma o Beta dependiendo de la orientación)
+            // Asumimos orientación vertical (portrait) del móvil en el bolsillo
             window.addEventListener('deviceorientation', e => {
-                let lane = 1;
-                if (e.gamma < -18) lane = 0; else if (e.gamma > 18) lane = 2;
-                if (connection?.open) connection.send({ type: 'move', lane });
+                // Si inclina el móvil hacia adelante/atrás (Beta) más de 30 grados
+                let duckThreshold = 30;
+                if (Math.abs(e.beta) > duckThreshold) {
+                    if(!player.isDuckingRemote) { 
+                        connection.send({ type: 'duck', value: true }); 
+                        player.isDuckingRemote = true; 
+                    }
+                } else {
+                    if(player.isDuckingRemote) { 
+                        connection.send({ type: 'duck', value: false }); 
+                        player.isDuckingRemote = false; 
+                    }
+                }
             });
+
+            // Detección de Salto (Acelerómetro)
             let lastJ = 0;
             window.addEventListener('devicemotion', e => {
                 let a = e.accelerationIncludingGravity;
-                if (a && (Math.abs(a.y) > 13 || Math.abs(a.z) > 13)) {
-                    if (Date.now() - lastJ > 700) { 
-                        connection.send({ type: 'jump' }); 
-                        lastJ = Date.now(); 
-                    }
+                if (a && (Math.abs(a.y) > 14 || Math.abs(a.z) > 14)) { // Umbral ligeramente más alto para niños efusivos
+                    if (Date.now() - lastJ > 700) { connection.send({ type: 'jump' }); lastJ = Date.now(); }
                 }
             });
         }
 
-        // --- JUEGO ---
+        // --- JUEGO (Lógica Side-Scroller 2D) ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let score = 0, frames = 0, isGameOver = false, obstacles = [];
+        let score = 0, hiScore = 0, frames = 0, isGameOver = false, gameSpeed = 6;
+        let obstacles = [];
+        let groundY = 220; // Línea del suelo en el canvas
 
         const player = {
-            lane: 1, targetLane: 1, y: 0, vY: 0,
+            x: 50, y: 0, vY: 0, width: 40, height: 60, duckHeight: 35,
+            isGrounded: true, isDucking: false,
             update() {
-                this.lane += (this.targetLane - this.lane) * 0.15;
-                if (this.y < 0 || this.vY !== 0) {
-                    this.vY += 0.8; this.y += this.vY;
-                    if (this.y > 0) { this.y = 0; this.vY = 0; }
-                }
+                // Gravedad
+                this.vY += 0.9;
+                this.y += this.vY;
+                // Colisión suelo
+                if (this.y >= 0) { this.y = 0; this.vY = 0; this.isGrounded = true; }
+                else { this.isGrounded = false; }
             },
-            jump() { if (this.y === 0) this.vY = -14; },
+            jump() { if (this.isGrounded && !this.isDucking) { this.vY = -16; this.isGrounded = false; } },
             draw() {
-                const x = 140 + this.lane * 260;
+                let currentHeight = this.isDucking ? this.duckHeight : this.height;
+                let drawY = groundY - currentHeight + this.y;
+                
                 ctx.save();
-                ctx.translate(x, 360 + this.y);
-                ctx.fillStyle = "rgba(0,0,0,0.4)";
-                ctx.beginPath(); ctx.ellipse(0, 60, 45 - (this.y*-0.1), 15, 0, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#6366f1";
-                ctx.fillRect(-35, -20, 70, 70);
+                // Dibujar cuerpo Dino (Gris oscuro)
+                ctx.fillStyle = "#535353";
+                if(this.isDucking) {
+                    ctx.fillRect(this.x, groundY - this.duckHeight, 60, this.duckHeight); // Más ancho al agacharse
+                } else {
+                    ctx.fillRect(this.x, drawY, this.width, this.height);
+                }
+
+                // Rostro
                 if (customHead) {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(0, -60, 50, 0, Math.PI*2); ctx.clip();
-                    ctx.drawImage(customHead, -50, -110, 100, 100);
+                    ctx.beginPath();
+                    if(this.isDucking) {
+                        ctx.arc(this.x + 45, groundY - 20, 25, 0, Math.PI*2); // Rostro al frente al agacharse
+                    } else {
+                        ctx.arc(this.x + this.width/2, drawY - 25, 30, 0, Math.PI*2); // Rostro arriba
+                    }
+                    ctx.clip();
+                    if(this.isDucking) ctx.drawImage(customHead, this.x + 20, groundY - 45, 50, 50);
+                    else ctx.drawImage(customHead, this.x - 10, drawY - 55, 60, 60);
                     ctx.restore();
                 }
                 ctx.restore();
@@ -184,40 +211,77 @@
         function startGame() {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-host-game').classList.add('active');
-            canvas.width = 800; canvas.height = 450;
+            // Canvas ancho para scroll lateral
+            canvas.width = 800; canvas.height = 350; 
             loop();
         }
 
         function loop() {
             if (isGameOver) return;
             frames++;
-            ctx.fillStyle = "#020617"; ctx.fillRect(0, 0, 800, 450);
+            ctx.clearRect(0, 0, 800, 350);
             
-            // Carretera
-            ctx.fillStyle = "#1e293b";
-            ctx.beginPath(); ctx.moveTo(350, 0); ctx.lineTo(450, 0); ctx.lineTo(800, 450); ctx.lineTo(0, 450); ctx.fill();
-
-            if (frames % 70 === 0) {
-                obstacles.push({ lane: Math.floor(Math.random()*3), z: 0, color: `hsl(${frames%360}, 80%, 60%)` });
+            // Dibujar Suelo Pixelado
+            ctx.strokeStyle = "#535353"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(800, groundY); ctx.stroke();
+            // Pequeños puntos/hierba en el suelo que hacen scroll
+            for(let i=0; i<10; i++) {
+                ctx.fillStyle = "#888";
+                let x = ((i * 100) - (frames * gameSpeed)) % 900;
+                if(x < -10) x += 900;
+                ctx.fillRect(x, groundY + 5, 4, 2);
             }
 
+            // Generar Obstáculos
+            // Tipos: 0 (Cactus bajo - saltar), 1 (Pterodáctilo alto - agacharse)
+            if (frames % 120 === 0) {
+                let type = (score > 200 && Math.random() > 0.5) ? 1 : 0;
+                let obs = { x: 800, type: type, passed: false };
+                if (type === 0) { obs.w = 25; obs.h = 50; obs.y = groundY - 50; } // Cactus
+                else { obs.w = 40; obs.h = 30; obs.y = groundY - 85; } // Ave alta
+                obstacles.push(obs);
+            }
+
+            // Aumentar velocidad progresivamente
+            if(frames % 500 === 0) gameSpeed += 0.5;
+
             obstacles.forEach((o, i) => {
-                o.z += 0.015 + (score * 0.0005);
-                let x = (140 + o.lane * 260) * o.z + (400 * (1-o.z));
-                let y = 450 * o.z;
-                let size = 120 * o.z;
-
-                ctx.fillStyle = o.color;
-                ctx.shadowBlur = 15; ctx.shadowColor = o.color;
-                ctx.fillRect(x - size/2, y - size, size, size);
-                ctx.shadowBlur = 0;
-
-                if (o.z > 0.75 && o.z < 0.88 && Math.round(player.lane) === o.lane && player.y > -30) {
-                    isGameOver = true; playSound('crash');
-                    setTimeout(() => location.reload(), 2000);
+                o.x -= gameSpeed;
+                ctx.fillStyle = "#535353";
+                if(o.type === 0) { // Cactus
+                    ctx.fillRect(o.x, o.y, o.w, o.h);
+                    ctx.fillRect(o.x-5, o.y+10, 5, 25); ctx.fillRect(o.x+o.w, o.y+15, 5, 20); // Brazos cactus
+                } else { // Pterodáctilo (forma simple)
+                    ctx.fillRect(o.x, o.y, o.w, o.h);
+                    ctx.fillRect(o.x - 15, o.y + o.h/2 - 2, 15, 4); // Alas simple
+                    ctx.fillRect(o.x + o.w, o.y + o.h/2 - 2, 15, 4);
                 }
-                if (o.z > 1) { obstacles.splice(i, 1); score++; playSound('point'); document.getElementById('score-display').innerText = score; }
+
+                // Colisión precisa
+                let pW = player.isDucking ? 60 : player.width;
+                let pH = player.isDucking ? player.duckHeight : player.height;
+                let pY = groundY - pH + player.y;
+
+                if (o.x < player.x + pW && o.x + o.w > player.x && o.y < pY + pH && o.y + o.h > pY) {
+                    isGameOver = true; playSound('crash');
+                    if(score > hiScore) hiScore = score;
+                    ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.fillRect(0,0,800,350);
+                    ctx.fillStyle = "#535353"; ctx.font = "20px 'Press Start 2P'"; ctx.textAlign="center";
+                    ctx.fillText("G A M E  O V E R", 400, 160);
+                    ctx.font = "12px 'Press Start 2P'";
+                    ctx.fillText("Sacude el móvil para reiniciar", 400, 200);
+                    // Lógica de reinicio en el sensor ( handleMotion necesita saber que es gameover )
+                }
+
+                if (o.x + o.w < 0) { obstacles.splice(i, 1); }
             });
+
+            // Puntuación
+            score++;
+            if(score % 100 === 0) playSound('point'); // Sonido cada 100 puntos
+            let sStr = score.toString().padStart(5, '0');
+            let hStr = hiScore.toString().padStart(5, '0');
+            document.getElementById('score-display').innerText = `HI ${hStr} ${sStr}`;
 
             player.update(); player.draw();
             requestAnimationFrame(loop);
